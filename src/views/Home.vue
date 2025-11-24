@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-shothodzo-green-light via-white to-shothodzo-purple-light">
+  <div class="min-h-screen bg-gray-50">
     <!-- Top Utility Bar -->
     <div class="glass-dark bg-shothodzo-purple-light/80 text-white py-2">
       <div class="container mx-auto px-4 flex justify-between items-center text-sm">
@@ -37,13 +37,9 @@
     <!-- Main Navigation -->
     <nav class="glass-nav bg-shothodzo-green-dark/90 text-white sticky top-0 z-50">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <router-link to="/" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-          <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-            <span class="text-shothodzo-green-dark font-bold text-2xl">S</span>
-          </div>
-          <div>
-            <h1 class="text-2xl font-bold">SHOTHODZO</h1>
-            <p class="text-xs text-shothodzo-green-light">Funeral Service</p>
+        <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+          <div class="w-[350px] h-[150px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
+            <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
           </div>
         </router-link>
         <div class="flex gap-6 items-center">
@@ -60,7 +56,7 @@
     <!-- Hero Section -->
     <section class="relative py-12">
       <div class="grid grid-cols-3 gap-6 container mx-auto px-4">
-        <div class="col-span-2 glass-card bg-white/80 h-96 flex items-center justify-center p-8">
+        <div class="col-span-2 neumorphic h-96 flex items-center justify-center p-8 rounded-2xl">
           <div class="text-center">
             <h2 class="text-4xl font-bold text-shothodzo-purple mb-4">Protecting Your Family's Future</h2>
             <p class="text-xl text-gray-700 mb-6">Comprehensive funeral services with care and compassion</p>

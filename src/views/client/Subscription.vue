@@ -4,13 +4,9 @@
     <header class="bg-shothodzo-green-dark text-white shadow-lg">
       <div class="container mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
-          <router-link to="/" class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span class="text-shothodzo-green-dark font-bold text-xl">S</span>
-            </div>
-            <div>
-              <h1 class="text-xl font-bold">SHOTHODZO CLIENT</h1>
-              <p class="text-xs text-shothodzo-green-light">Funeral Service</p>
+          <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+            <div class="w-[310px] h-[150px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
+              <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
             </div>
           </router-link>
           <div class="flex items-center gap-4">
@@ -144,7 +140,7 @@
             />
           </div>
 
-          <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="bg-white border border-gray-200 p-4 rounded-lg">
             <div class="flex justify-between items-center mb-2">
               <span class="text-gray-700">Monthly Premium:</span>
               <span class="text-2xl font-bold text-shothodzo-green">

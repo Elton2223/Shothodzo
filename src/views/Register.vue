@@ -3,11 +3,9 @@
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-8">
         <router-link to="/" class="flex flex-col items-center mb-4 cursor-pointer hover:opacity-80 transition-opacity">
-          <div class="w-16 h-16 bg-shothodzo-green rounded-lg flex items-center justify-center">
-            <span class="text-white font-bold text-3xl">S</span>
+          <div class="w-[430px] h-[150px] bg-white rounded-lg flex items-center justify-center p-3 shadow-md overflow-hidden">
+            <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
           </div>
-          <h2 class="text-3xl font-bold text-shothodzo-purple mt-2">SHOTHODZO</h2>
-          <p class="text-shothodzo-green mt-1">Funeral Service</p>
         </router-link>
         <h3 class="mt-6 text-2xl font-semibold text-gray-900">Create your account</h3>
       </div>
