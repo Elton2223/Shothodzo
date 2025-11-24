@@ -37,11 +37,29 @@
     @apply bg-white/10 backdrop-blur-lg border-b border-white/20 shadow-md;
   }
   
+  /* Consistent Neumorphism with Shothodzo Green */
   .neumorphic {
     background: #f3f4f6;
     box-shadow: 
       8px 8px 16px rgba(5, 150, 105, 0.15),
       -8px -8px 16px rgba(255, 255, 255, 0.8);
+    border-radius: 1rem;
+  }
+  
+  .neumorphic-sm {
+    background: #f3f4f6;
+    box-shadow: 
+      4px 4px 8px rgba(5, 150, 105, 0.15),
+      -4px -4px 8px rgba(255, 255, 255, 0.8);
+    border-radius: 0.75rem;
+  }
+  
+  .neumorphic-lg {
+    background: #f3f4f6;
+    box-shadow: 
+      12px 12px 24px rgba(5, 150, 105, 0.15),
+      -12px -12px 24px rgba(255, 255, 255, 0.8);
+    border-radius: 1.5rem;
   }
   
   .neumorphic-inset {
@@ -49,6 +67,22 @@
     box-shadow: 
       inset 4px 4px 8px rgba(5, 150, 105, 0.15),
       inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+    border-radius: 1rem;
+  }
+  
+  .neumorphic-hover {
+    background: #f3f4f6;
+    box-shadow: 
+      8px 8px 16px rgba(5, 150, 105, 0.15),
+      -8px -8px 16px rgba(255, 255, 255, 0.8);
+    border-radius: 1rem;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .neumorphic-hover:hover {
+    box-shadow: 
+      6px 6px 12px rgba(5, 150, 105, 0.2),
+      -6px -6px 12px rgba(255, 255, 255, 0.9);
   }
 }
 
