@@ -47,12 +47,12 @@
           </div>
         </router-link>
         <div class="flex gap-6 items-center">
-          <router-link to="/" class="hover:text-shothodzo-green-light transition-colors">BENEFIT WITH SHOTHODZO</router-link>
-          <a href="#" class="hover:text-shothodzo-green-light transition-colors">Funeral Service</a>
-          <a href="#" class="hover:text-shothodzo-green-light transition-colors">INSURE WITH SHOTHODZO</a>
-          <a href="#" class="hover:text-shothodzo-green-light transition-colors">PAY YOUR PREMIUM</a>
-          <a href="#" class="hover:text-shothodzo-green-light transition-colors">HOW TO CLAIM</a>
-          <router-link to="/login" class="btn-secondary">LOGIN</router-link>
+          <router-link to="/" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">BENEFIT WITH SHOTHODZO</router-link>
+          <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">FUNERAL SERVICE</a>
+          <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">INSURE WITH SHOTHODZO</a>
+          <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">PAY YOUR PREMIUM</a>
+          <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">HOW TO CLAIM</a>
+          <router-link to="/login" class="btn-secondary text-sm font-medium">LOGIN</router-link>
         </div>
       </div>
     </nav>

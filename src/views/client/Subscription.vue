@@ -27,13 +27,13 @@
         <div class="flex gap-6">
           <router-link
             to="/client"
-            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors"
+            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors text-sm font-semibold"
           >
             Dashboard
           </router-link>
           <router-link
             to="/client/subscription"
-            class="px-4 py-3 border-b-2 border-shothodzo-green text-shothodzo-green font-semibold"
+            class="px-4 py-3 border-b-2 border-shothodzo-green text-shothodzo-green font-semibold text-sm"
           >
             My Subscription
           </router-link>

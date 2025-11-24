@@ -27,25 +27,25 @@
         <div class="flex gap-6">
           <router-link
             to="/employee"
-            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors"
+            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors text-sm font-semibold"
           >
             Dashboard
           </router-link>
           <router-link
             to="/employee/clients"
-            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors"
+            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors text-sm font-semibold"
           >
             My Clients
           </router-link>
           <router-link
             to="/employee/payments"
-            class="px-4 py-3 border-b-2 border-shothodzo-green text-shothodzo-green font-semibold"
+            class="px-4 py-3 border-b-2 border-shothodzo-green text-shothodzo-green font-semibold text-sm"
           >
             Payments
           </router-link>
           <router-link
             to="/employee/subscriptions"
-            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors"
+            class="px-4 py-3 border-b-2 border-transparent hover:border-shothodzo-green hover:text-shothodzo-green transition-colors text-sm font-semibold"
           >
             Subscriptions
           </router-link>
