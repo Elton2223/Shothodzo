@@ -35,7 +35,7 @@
     </div>
 
     <!-- Main Navigation -->
-    <nav class="glass-nav bg-shothodzo-green-dark/90 text-white sticky top-0 z-50">
+    <nav class="glass-nav bg-shothodzo-green-dark text-white sticky top-0 z-50" style="background-color: rgba(5, 150, 105, 0.95);">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
           <div class="w-[350px] h-[146px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
@@ -54,85 +54,226 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative py-12">
-      <div class="grid grid-cols-3 gap-6 container mx-auto px-4">
-        <div class="col-span-2 neumorphic h-96 flex items-center justify-center p-8 rounded-2xl">
-          <div class="text-center">
-            <h2 class="text-4xl font-bold text-shothodzo-purple mb-4">Protecting Your Family's Future</h2>
-            <p class="text-xl text-gray-700 mb-6">Comprehensive Shothodzo funeral services with care and compassion</p>
-            <router-link to="/register" class="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-shadow">GET STARTED</router-link>
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 gap-12 items-center">
+          <div>
+            <h1 class="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Compassionate Shothodzo Funeral Services You Can Trust
+            </h1>
+            <p class="text-xl text-gray-700 mb-8 leading-relaxed">
+              We provide personalized and sensitive funeral services tailored to honor your loved one's unique life and legacy. Our team approaches every service with the utmost sensitivity and care.
+            </p>
+            <router-link to="/register" class="btn-primary text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-shadow inline-block">
+              Start Funeral Planning
+            </router-link>
+          </div>
+          <div class="flex justify-center">
+            <div class="w-96 h-96 rounded-full overflow-hidden shadow-2xl">
+              <img src="/images/Shothodzo.jpg" alt="Shothodzo Funeral Services" class="w-full h-full object-cover" />
+            </div>
           </div>
         </div>
-        <div class="col-span-1 glass-dark bg-shothodzo-green-dark/80 text-white p-8 flex flex-col justify-center rounded-lg">
-          <h3 class="text-2xl font-bold mb-4">SHOTHODZO DECLARES</h3>
-          <h2 class="text-4xl font-bold mb-6">MEMBER BENEFITS</h2>
-          <p class="mb-6">We share our profits with our loyal members through FREE funeral benefits and special member services.</p>
-          <button class="btn-secondary w-full shadow-lg hover:shadow-xl transition-shadow">LEARN MORE</button>
+      </div>
+    </section>
+
+    <!-- Why Families Trust Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-900 mb-12">
+          Why Families Across South Africa Trust Shothodzo Funeral Services
+        </h2>
+        <div class="grid grid-cols-4 gap-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Compassionate & Personalized Service</h3>
+            <p class="text-gray-700">We provide careful, tailor-made services that reflect your loved one's unique life and legacy.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                <path d="M10 11a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Experienced, Caring Professionals</h3>
+            <p class="text-gray-700">Our dedicated team has years of experience and provides heartfelt guidance throughout the process.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Support Around The Clock</h3>
+            <p class="text-gray-700">Available 24/7 for questions, arrangements, and support when you need us most.</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.12V17a1 1 0 001 1z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Trusted By South African Families</h3>
+            <p class="text-gray-700">Rooted in local values and community care, earning trust through respectful, dignified service.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Info Section -->
-    <section class="py-12">
+    <!-- Trusted Professionals Section -->
+    <section class="py-16 bg-white">
       <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto text-center glass-card bg-white/70 p-8 rounded-2xl">
-          <p class="text-lg text-gray-800 mb-4">
-            <strong class="text-shothodzo-green">SHOTHODZO</strong> is a mutual society, which means that all our surplus profits are given back to our loyal members (policyholders) who choose to insure or save with SHOTHODZO.
-          </p>
-          <p class="text-lg text-gray-800">
-            We share our profits with our members in the form of <strong class="text-shothodzo-green">FREE</strong> funeral benefits* from Shothodzo funeral services as well as other special member benefits*.
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-4xl font-bold text-gray-900 mb-6">
+            Trusted Funeral Professionals Serving South African Communities
+          </h2>
+          <p class="text-xl text-gray-700 leading-relaxed">
+            Shothodzo funeral services is a trusted service dedicated to honoring lives with dignity and respect. We provide personalized farewells that reflect each unique life and personality, ensuring every service is conducted with excellence and a comforting atmosphere.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Feature Blocks -->
-    <section class="py-12">
+    <!-- Call to Action Section -->
+    <section class="py-16 bg-gray-50">
       <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="text-4xl font-bold text-gray-900 mb-6">
+              Need Support Planning a Funeral? Contact Shothodzo Funeral Services for compassionate guidance today.
+            </h2>
+            <button class="btn-primary text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-shadow">
+              Get Funeral Guidance
+            </button>
+          </div>
+          <div class="rounded-lg overflow-hidden shadow-xl">
+            <img src="/images/Shothodzo.jpg" alt="Funeral Guidance" class="w-full h-80 object-cover" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Professional Services Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-900 mb-12">
+          Professional Funeral Services That Honor Your Loved One's Legacy
+        </h2>
+        <div class="grid grid-cols-3 gap-8">
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-48 bg-shothodzo-green-light flex items-center justify-center">
+              <svg class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Traditional Funeral Services</h3>
+              <p class="text-gray-700">Complete funeral arrangements including viewings, ceremonies, and graveside services.</p>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-48 bg-shothodzo-purple-light flex items-center justify-center">
+              <svg class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
+                <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Cremation Services</h3>
+              <p class="text-gray-700">Simple, direct cremation in conjunction with memorial services.</p>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-48 bg-shothodzo-green flex items-center justify-center">
+              <svg class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Pre-Planning & Pre-Arranged Funerals</h3>
+              <p class="text-gray-700">Plan ahead for peace of mind with our pre-planning services.</p>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-48 bg-shothodzo-purple flex items-center justify-center">
+              <svg class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Memorial Services</h3>
+              <p class="text-gray-700">Celebrate a loved one's life with a personalized memorial service.</p>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-48 bg-shothodzo-green-dark flex items-center justify-center">
+              <svg class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Graveside Services</h3>
+              <p class="text-gray-700">Intimate graveside ceremonies for final farewells.</p>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div class="h-48 bg-shothodzo-purple-dark flex items-center justify-center">
+              <svg class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
+              </svg>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Transportation & Repatriation</h3>
+              <p class="text-gray-700">National and international transportation and repatriation services.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-gray-900 mb-12">
+          Shothodzo Funeral Services - Compassionate Care in Your Time of Need
+        </h2>
         <div class="grid grid-cols-3 gap-6">
-          <div class="glass-card bg-white/80 border-t-4 border-shothodzo-green p-6 rounded-xl hover:scale-105 transition-transform duration-300">
-            <div class="text-shothodzo-green mb-4">
-              <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+          <div v-for="(testimonial, index) in testimonials" :key="index" class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex items-center mb-4">
+              <div class="w-12 h-12 bg-shothodzo-green-light rounded-full flex items-center justify-center mr-3">
+                <span class="text-white font-bold text-lg">{{ testimonial.initials }}</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900">{{ testimonial.name }}</p>
+                <p class="text-sm text-gray-600">{{ testimonial.location }}</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <svg v-for="i in 5" :key="i" class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             </div>
-            <h3 class="text-xl font-bold text-shothodzo-green mb-2">FREE FUNERAL BENEFITS & TRANSPORT*</h3>
-            <p class="text-gray-700">Comprehensive funeral coverage with transportation services included for all members.</p>
-          </div>
-
-          <div class="glass-card bg-white/80 border-t-4 border-shothodzo-green p-6 rounded-xl hover:scale-105 transition-transform duration-300">
-            <div class="text-shothodzo-green mb-4">
-              <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-shothodzo-green mb-2">CASHBACK FUNERAL INSURANCE</h3>
-            <p class="text-gray-700">Get cashback benefits on your funeral insurance premiums while protecting your family.</p>
-          </div>
-
-          <div class="glass-card bg-white/80 border-t-4 border-shothodzo-green p-6 rounded-xl hover:scale-105 transition-transform duration-300">
-            <div class="text-shothodzo-green mb-4">
-              <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-shothodzo-green mb-2">NATIONAL AND INTERNATIONAL REPATRIATION</h3>
-            <p class="text-gray-700">Comprehensive repatriation services for both national and international needs.</p>
+            <p class="text-gray-700 italic">"{{ testimonial.quote }}"</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="glass-dark bg-shothodzo-green-dark/90 text-white py-8">
+    <footer class="glass-dark text-white py-8" style="background-color: rgba(5, 150, 105, 0.95);">
       <div class="container mx-auto px-4">
         <div class="flex justify-between items-center">
           <p>That's why SHOTHODZO is a 'mutual society' based on a shared value business model.</p>
           <button class="btn-secondary">LEARN MORE ABOUT US</button>
-        
         </div>
         <div class="mt-8 pt-8 border-t border-shothodzo-green-light text-sm text-center">
+          <p class="mt-2">For 24-hour Shothodzo funeral services assistance, dial <strong class="text-2xl">0861 28 26 21</strong></p>
         </div>
       </div>
     </footer>
@@ -140,5 +281,42 @@
 </template>
 
 <script setup>
+const testimonials = [
+  {
+    initials: 'ER',
+    name: 'Emily R.',
+    location: 'Johannesburg, SA',
+    quote: 'The compassion and professionalism shown by Shothodzo during our difficult time was exceptional. They truly cared about honoring our loved one.'
+  },
+  {
+    initials: 'JM',
+    name: 'James M.',
+    location: 'Cape Town, SA',
+    quote: 'Shothodzo made the entire process seamless and respectful. Their attention to detail and personalized service meant everything to our family.'
+  },
+  {
+    initials: 'SL',
+    name: 'Sarah L.',
+    location: 'Durban, SA',
+    quote: 'We are so grateful for the support and guidance provided. The team was available 24/7 and helped us through every step with dignity.'
+  },
+  {
+    initials: 'DT',
+    name: 'David T.',
+    location: 'Pretoria, SA',
+    quote: 'The mutual society model means we actually benefit from being members. The FREE funeral benefits are a true blessing for our family.'
+  },
+  {
+    initials: 'PM',
+    name: 'Patricia M.',
+    location: 'Port Elizabeth, SA',
+    quote: 'Professional, compassionate, and trustworthy. Shothodzo exceeded our expectations in every way during such a difficult time.'
+  },
+  {
+    initials: 'RK',
+    name: 'Robert K.',
+    location: 'Bloemfontein, SA',
+    quote: 'The shared value approach is remarkable. We feel like owners, not just customers. The benefits we receive are real and meaningful.'
+  }
+]
 </script>
-
