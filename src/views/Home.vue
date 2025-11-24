@@ -38,13 +38,13 @@
     <nav class="glass-nav bg-shothodzo-green-dark/90 text-white sticky top-0 z-50">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
-          <div class="w-[350px] h-[150px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
+          <div class="w-[350px] h-[146px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
             <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
           </div>
         </router-link>
         <div class="flex gap-6 items-center">
           <router-link to="/" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">BENEFIT WITH SHOTHODZO</router-link>
-          <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">FUNERAL SERVICE</a>
+          <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">SHOTHODZO FUNERAL SERVICES</a>
           <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">INSURE WITH SHOTHODZO</a>
           <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">PAY YOUR PREMIUM</a>
           <a href="#" class="text-sm font-medium hover:text-shothodzo-green-light transition-colors">HOW TO CLAIM</a>
@@ -59,7 +59,7 @@
         <div class="col-span-2 neumorphic h-96 flex items-center justify-center p-8 rounded-2xl">
           <div class="text-center">
             <h2 class="text-4xl font-bold text-shothodzo-purple mb-4">Protecting Your Family's Future</h2>
-            <p class="text-xl text-gray-700 mb-6">Comprehensive funeral services with care and compassion</p>
+            <p class="text-xl text-gray-700 mb-6">Comprehensive Shothodzo funeral services with care and compassion</p>
             <router-link to="/register" class="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-shadow">GET STARTED</router-link>
           </div>
         </div>
@@ -80,7 +80,7 @@
             <strong class="text-shothodzo-green">SHOTHODZO</strong> is a mutual society, which means that all our surplus profits are given back to our loyal members (policyholders) who choose to insure or save with SHOTHODZO.
           </p>
           <p class="text-lg text-gray-800">
-            We share our profits with our members in the form of <strong class="text-shothodzo-green">FREE</strong> funeral benefits* from Shothodzo Funeral Service as well as other special member benefits*.
+            We share our profits with our members in the form of <strong class="text-shothodzo-green">FREE</strong> funeral benefits* from Shothodzo funeral services as well as other special member benefits*.
           </p>
         </div>
       </div>
@@ -130,10 +130,9 @@
         <div class="flex justify-between items-center">
           <p>That's why SHOTHODZO is a 'mutual society' based on a shared value business model.</p>
           <button class="btn-secondary">LEARN MORE ABOUT US</button>
+        
         </div>
         <div class="mt-8 pt-8 border-t border-shothodzo-green-light text-sm text-center">
-          <p>SHOTHODZO Mutual Assurance Society is a licensed life insurer and authorised Financial Services Provider.</p>
-          <p class="mt-2">For 24-hour funeral service assistance, dial <strong class="text-2xl">0861 28 26 21</strong></p>
         </div>
       </div>
     </footer>
