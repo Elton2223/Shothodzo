@@ -144,6 +144,35 @@
         </div>
       </div>
 
+      <!-- Warnings Section -->
+      <div v-if="unreadWarnings.length > 0" class="bg-yellow-50 border-l-4 border-yellow-400 rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+          <h2 class="text-xl font-bold text-yellow-800">Important Notifications</h2>
+        </div>
+        <div class="space-y-3">
+          <div v-for="warning in unreadWarnings" :key="warning.id" class="bg-white border-l-4 border-yellow-400 p-4 rounded">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <p class="font-semibold text-gray-900">{{ warning.subject }}</p>
+                <p class="text-sm text-gray-600">{{ warning.type.replace('_', ' ').toUpperCase() }}</p>
+              </div>
+              <button 
+                @click="markWarningAsRead(warning.id)" 
+                class="text-xs text-gray-500 hover:text-gray-700"
+                title="Mark as read"
+              >
+                ✕
+              </button>
+            </div>
+            <p class="text-sm text-gray-700">{{ warning.message }}</p>
+            <p class="text-xs text-gray-500 mt-2">{{ new Date(warning.created_at).toLocaleDateString() }}</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Recent Payments -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Recent Payments</h2>
@@ -182,6 +211,7 @@ const totalPayments = ref(0)
 const recentPayments = ref([])
 const showFamilyPlanPopup = ref(false)
 const familyPlanInfo = ref({})
+const warnings = ref([])
 
 const clientName = computed(() => {
   if (authStore.currentUser) {
@@ -277,12 +307,45 @@ const loadClientInfo = () => {
   
   totalPayments.value = paymentsResult.total || 0
 
+  // Load warnings
+  loadWarnings(clientId)
+
   // Check for family plan info from localStorage (set during registration)
   const storedFamilyPlan = localStorage.getItem('familyPlanInfo')
   if (storedFamilyPlan && client.is_family_member) {
     familyPlanInfo.value = JSON.parse(storedFamilyPlan)
     showFamilyPlanPopup.value = true
     localStorage.removeItem('familyPlanInfo')
+  }
+}
+
+const loadWarnings = (clientId) => {
+  try {
+    const allWarnings = JSON.parse(localStorage.getItem('shothodzo_warnings') || '[]')
+    warnings.value = allWarnings
+      .filter(w => w.client_id === clientId)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  } catch (error) {
+    console.error('Error loading warnings:', error)
+    warnings.value = []
+  }
+}
+
+const unreadWarnings = computed(() => {
+  return warnings.value.filter(w => !w.read)
+})
+
+const markWarningAsRead = (warningId) => {
+  try {
+    const allWarnings = JSON.parse(localStorage.getItem('shothodzo_warnings') || '[]')
+    const warningIndex = allWarnings.findIndex(w => w.id === warningId)
+    if (warningIndex !== -1) {
+      allWarnings[warningIndex].read = true
+      localStorage.setItem('shothodzo_warnings', JSON.stringify(allWarnings))
+      loadWarnings(getClientId(authStore.currentUser))
+    }
+  } catch (error) {
+    console.error('Error marking warning as read:', error)
   }
 }
 

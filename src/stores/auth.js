@@ -31,8 +31,18 @@ export const useAuthStore = defineStore('auth', () => {
     if (savedUser && savedRole) {
       try {
         const user = JSON.parse(savedUser)
+        
+        // Get the actual user ID - could be user.id (for admin) or user.user_id (for employee/client merged objects)
+        const userId = user.user_id || user.id
+        
+        if (!userId) {
+          console.error('No user ID found in saved user data')
+          logout()
+          return
+        }
+        
         // Verify the user still exists in the database
-        const dbUser = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id)
+        const dbUser = db.prepare('SELECT * FROM users WHERE id = ?').get(userId)
         if (dbUser) {
           // Reload user data based on role
           if (savedRole === 'employee') {
@@ -44,6 +54,9 @@ export const useAuthStore = defineStore('auth', () => {
               const employeeFromDb = db.prepare('SELECT * FROM employees WHERE user_id = ?').get(dbUser.id)
               if (employeeFromDb) {
                 currentUser.value = { ...dbUser, ...employeeFromDb, role: savedRole }
+              } else {
+                // Employee record not found, but user exists - still allow login
+                currentUser.value = { ...dbUser, role: savedRole }
               }
             }
           } else if (savedRole === 'client') {
@@ -55,14 +68,22 @@ export const useAuthStore = defineStore('auth', () => {
               const clientFromDb = db.prepare('SELECT * FROM clients WHERE user_id = ?').get(dbUser.id)
               if (clientFromDb) {
                 currentUser.value = { ...dbUser, ...clientFromDb, role: savedRole }
+              } else {
+                // Client record not found, but user exists - still allow login
+                currentUser.value = { ...dbUser, role: savedRole }
               }
             }
           } else {
             currentUser.value = { ...dbUser, role: savedRole }
           }
           userRole.value = savedRole
+          
+          // Update localStorage with fresh data
+          localStorage.setItem('shothodzo_current_user', JSON.stringify(currentUser.value))
+          localStorage.setItem('shothodzo_user_role', savedRole)
         } else {
           // User no longer exists, clear session
+          console.log('User not found in database, clearing session')
           logout()
         }
       } catch (error) {

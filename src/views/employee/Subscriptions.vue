@@ -103,82 +103,18 @@
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button @click="manageSubscription(item)" class="text-shothodzo-green hover:text-shothodzo-green-dark mr-4">
+                <router-link 
+                  :to="`/employee/subscriptions/${item.client_id}`" 
+                  class="text-shothodzo-green hover:text-shothodzo-green-dark mr-4"
+                >
                   {{ item.subscription_id ? 'Manage' : 'Create' }}
-                </button>
+                </router-link>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Manage Subscription Modal -->
-      <div v-if="showManageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-          <h3 class="text-2xl font-bold text-gray-800 mb-6">
-            {{ selectedSubscription ? 'Manage Subscription' : 'Create Subscription' }}
-          </h3>
-          
-          <form @submit.prevent="handleSaveSubscription" class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Client</label>
-                <input
-                  :value="selectedClient?.client_name || ''"
-                  type="text"
-                  disabled
-                  class="input-field bg-gray-100"
-                />
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Plan Type *</label>
-                <select v-model="subscriptionForm.planType" @change="updatePremium" required class="input-field">
-                  <option value="individual">Individual (R500/month)</option>
-                  <option value="family">Family (R1,200/month)</option>
-                </select>
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Monthly Premium (R) *</label>
-                <input
-                  v-model.number="subscriptionForm.monthlyPremium"
-                  type="number"
-                  step="0.01"
-                  required
-                  class="input-field"
-                />
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
-                <input
-                  v-model="subscriptionForm.startDate"
-                  type="date"
-                  required
-                  class="input-field"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
-              <select v-model="subscriptionForm.status" required class="input-field">
-                <option value="active">Active</option>
-                <option value="suspended">Suspended</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-
-            <div class="flex gap-4 pt-4">
-              <button type="submit" class="flex-1 btn-primary">Save Changes</button>
-              <button type="button" @click="closeModal" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-lg">Cancel</button>
-            </div>
-          </form>
-        </div>
-      </div>
     </main>
   </div>
 </template>
@@ -196,15 +132,6 @@ const authStore = useAuthStore()
 
 const subscriptions = ref([])
 const searchQuery = ref('')
-const showManageModal = ref(false)
-const selectedClient = ref(null)
-const selectedSubscription = ref(null)
-const subscriptionForm = ref({
-  planType: 'individual',
-  monthlyPremium: 500,
-  startDate: new Date().toISOString().split('T')[0],
-  status: 'active'
-})
 
 const logoRoute = computed(() => {
   if (authStore.isAuthenticated) {
@@ -305,120 +232,6 @@ const loadSubscriptions = () => {
   })
 }
 
-const updatePremium = () => {
-  subscriptionForm.value.monthlyPremium = subscriptionForm.value.planType === 'family' ? 1200 : 500
-}
-
-const manageSubscription = (item) => {
-  selectedClient.value = item
-  
-  // Get subscription from both database and localStorage
-  const dbSubscriptions = db.prepare('SELECT * FROM subscriptions').all() || []
-  const localStorageSubscriptions = JSON.parse(localStorage.getItem('shothodzo_subscriptions') || '[]')
-  const allSubscriptions = [...dbSubscriptions, ...localStorageSubscriptions]
-  
-  selectedSubscription.value = item.subscription_id ? allSubscriptions.find(s => s.id === item.subscription_id) : null
-  
-  if (selectedSubscription.value) {
-    subscriptionForm.value = {
-      planType: selectedSubscription.value.plan_type,
-      monthlyPremium: selectedSubscription.value.monthly_premium,
-      startDate: selectedSubscription.value.start_date,
-      status: selectedSubscription.value.status
-    }
-  } else {
-    subscriptionForm.value = {
-      planType: 'individual',
-      monthlyPremium: 500,
-      startDate: new Date().toISOString().split('T')[0],
-      status: 'active'
-    }
-  }
-  
-  showManageModal.value = true
-}
-
-const closeModal = () => {
-  showManageModal.value = false
-  selectedClient.value = null
-  selectedSubscription.value = null
-}
-
-const handleSaveSubscription = () => {
-  try {
-    const subscriptionsTable = db.getTable('subscriptions')
-    const clientsTable = db.getTable('clients')
-    
-    if (selectedSubscription.value) {
-      // Update existing subscription - update both localStorage and database
-      const index = subscriptionsTable.findIndex(s => s.id === selectedSubscription.value.id)
-      if (index !== -1) {
-        subscriptionsTable[index] = {
-          ...subscriptionsTable[index],
-          plan_type: subscriptionForm.value.planType,
-          monthly_premium: subscriptionForm.value.monthlyPremium,
-          start_date: subscriptionForm.value.startDate,
-          status: subscriptionForm.value.status
-        }
-        db.setTable('subscriptions', subscriptionsTable)
-        
-        // Also update via database query for consistency
-        db.prepare(`
-          UPDATE subscriptions 
-          SET plan_type = ?, monthly_premium = ?, start_date = ?, status = ?
-          WHERE id = ?
-        `).run(
-          subscriptionForm.value.planType,
-          subscriptionForm.value.monthlyPremium,
-          subscriptionForm.value.startDate,
-          subscriptionForm.value.status,
-          selectedSubscription.value.id
-        )
-      }
-    } else {
-      // Create new subscription - save to both localStorage and database
-      const newId = subscriptionsTable.length > 0 ? Math.max(...subscriptionsTable.map(s => s.id || 0)) + 1 : 1
-      const newSubscription = {
-        id: newId,
-        client_id: selectedClient.value.client_id,
-        plan_type: subscriptionForm.value.planType,
-        monthly_premium: subscriptionForm.value.monthlyPremium,
-        start_date: subscriptionForm.value.startDate,
-        end_date: null,
-        status: subscriptionForm.value.status,
-        created_at: new Date().toISOString()
-      }
-      subscriptionsTable.push(newSubscription)
-      db.setTable('subscriptions', subscriptionsTable)
-      
-      // Also insert via database query for consistency
-      db.prepare(`
-        INSERT INTO subscriptions (client_id, plan_type, monthly_premium, start_date, status)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(
-        selectedClient.value.client_id,
-        subscriptionForm.value.planType,
-        subscriptionForm.value.monthlyPremium,
-        subscriptionForm.value.startDate,
-        subscriptionForm.value.status
-      )
-    }
-    
-    // Update client subscription status
-    const clientIndex = clientsTable.findIndex(c => c.id === selectedClient.value.client_id)
-    if (clientIndex !== -1) {
-      clientsTable[clientIndex].subscription_status = subscriptionForm.value.status
-      db.setTable('clients', clientsTable)
-    }
-    
-    closeModal()
-    loadSubscriptions()
-    alert('Subscription saved successfully!')
-  } catch (error) {
-    console.error('Error saving subscription:', error)
-    alert('Error saving subscription: ' + error.message)
-  }
-}
 
 const handleLogout = () => {
   authStore.logout()

@@ -67,6 +67,7 @@
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Method</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Reference</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -90,6 +91,15 @@
                 <span :class="getStatusClass(payment.status)" class="px-2 py-1 text-xs font-semibold rounded-full">
                   {{ payment.status }}
                 </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <button 
+                  @click="confirmRevokePayment(payment)" 
+                  class="text-red-600 hover:text-red-800 font-semibold text-sm"
+                  title="Revoke this payment"
+                >
+                  Revoke
+                </button>
               </td>
             </tr>
           </tbody>
@@ -150,6 +160,31 @@
           </form>
         </div>
       </div>
+
+      <!-- Revoke Payment Confirmation Modal -->
+      <div v-if="showRevokeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+          <h3 class="text-2xl font-bold text-gray-800 mb-4">Revoke Payment</h3>
+          <div class="mb-6">
+            <p class="text-gray-600 mb-2">Are you sure you want to revoke this payment record?</p>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <p class="text-sm text-gray-700"><strong>Client:</strong> {{ paymentToRevoke?.client_name }}</p>
+              <p class="text-sm text-gray-700"><strong>Amount:</strong> R{{ paymentToRevoke?.amount?.toLocaleString() }}</p>
+              <p class="text-sm text-gray-700"><strong>Date:</strong> {{ paymentToRevoke?.payment_date ? new Date(paymentToRevoke.payment_date).toLocaleDateString() : 'N/A' }}</p>
+              <p class="text-sm text-gray-700"><strong>Reference:</strong> {{ paymentToRevoke?.reference_number || 'N/A' }}</p>
+            </div>
+            <p class="text-red-600 text-sm mt-4 font-semibold">This action cannot be undone.</p>
+          </div>
+          <div class="flex gap-4">
+            <button @click="handleRevokePayment" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg">
+              Yes, Revoke
+            </button>
+            <button @click="showRevokeModal = false" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-6 rounded-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 </template>
@@ -168,6 +203,8 @@ const authStore = useAuthStore()
 const payments = ref([])
 const myClients = ref([])
 const showAddModal = ref(false)
+const showRevokeModal = ref(false)
+const paymentToRevoke = ref(null)
 const newPayment = ref({
   clientId: '',
   amount: 0,
@@ -278,8 +315,43 @@ const handleAddPayment = () => {
     }
     showAddModal.value = false
     loadPayments()
+    alert('Payment recorded successfully!')
   } catch (error) {
     alert('Error recording payment: ' + error.message)
+  }
+}
+
+const confirmRevokePayment = (payment) => {
+  paymentToRevoke.value = payment
+  showRevokeModal.value = true
+}
+
+const handleRevokePayment = () => {
+  try {
+    if (!paymentToRevoke.value || !paymentToRevoke.value.id) {
+      alert('Invalid payment record')
+      return
+    }
+    
+    // Delete the payment from the database
+    db.prepare('DELETE FROM payments WHERE id = ?').run(paymentToRevoke.value.id)
+    
+    // Also remove from localStorage if it exists there
+    try {
+      const payments = JSON.parse(localStorage.getItem('shothodzo_payments') || '[]')
+      const filteredPayments = payments.filter(p => p.id !== paymentToRevoke.value.id)
+      localStorage.setItem('shothodzo_payments', JSON.stringify(filteredPayments))
+    } catch (error) {
+      console.error('Error removing payment from localStorage:', error)
+    }
+    
+    showRevokeModal.value = false
+    paymentToRevoke.value = null
+    loadPayments()
+    alert('Payment revoked successfully!')
+  } catch (error) {
+    console.error('Error revoking payment:', error)
+    alert('Error revoking payment: ' + error.message)
   }
 }
 

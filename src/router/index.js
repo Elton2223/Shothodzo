@@ -54,6 +54,12 @@ const routes = [
     meta: { requiresAuth: true, requiresRole: 'employee' }
   },
   {
+    path: '/employee/subscriptions/:clientId',
+    name: 'ManageClientSubscription',
+    component: () => import('../views/employee/ManageClientSubscription.vue'),
+    meta: { requiresAuth: true, requiresRole: 'employee' }
+  },
+  {
     path: '/client',
     name: 'ClientDashboard',
     component: () => import('../views/client/Dashboard.vue'),
@@ -75,12 +81,15 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   
-  // Ensure auth state is initialized
-  if (!authStore.isAuthenticated && localStorage.getItem('shothodzo_current_user')) {
-    try {
-      authStore.initializeAuth()
-    } catch (error) {
-      console.error('Error initializing auth:', error)
+  // Always try to initialize auth if there's saved data, even if isAuthenticated is false
+  // This handles page refreshes where the store might not be initialized yet
+  if (localStorage.getItem('shothodzo_current_user') && localStorage.getItem('shothodzo_user_role')) {
+    if (!authStore.isAuthenticated) {
+      try {
+        authStore.initializeAuth()
+      } catch (error) {
+        console.error('Error initializing auth:', error)
+      }
     }
   }
   
