@@ -58,7 +58,12 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="employee in employees" :key="employee.id" class="hover:bg-gray-50">
+            <tr v-if="paginatedEmployees.length === 0">
+              <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                No employees found
+              </td>
+            </tr>
+            <tr v-for="employee in paginatedEmployees" :key="employee.id" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">{{ employee.first_name }} {{ employee.last_name }}</div>
               </td>
@@ -81,6 +86,80 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="mt-6 flex items-center justify-between">
+        <div class="text-sm text-gray-700">
+          Showing {{ startIndex + 1 }} to {{ endIndex }} of {{ employees.length }} employees
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            @click="currentPage = 1"
+            :disabled="currentPage === 1"
+            :class="[
+              'px-3 py-2 text-sm font-medium rounded-lg',
+              currentPage === 1
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+            ]"
+          >
+            First
+          </button>
+          <button
+            @click="currentPage--"
+            :disabled="currentPage === 1"
+            :class="[
+              'px-3 py-2 text-sm font-medium rounded-lg',
+              currentPage === 1
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+            ]"
+          >
+            Previous
+          </button>
+          
+          <div class="flex items-center gap-1">
+            <button
+              v-for="page in visiblePages"
+              :key="page"
+              @click="currentPage = page"
+              :class="[
+                'px-3 py-2 text-sm font-medium rounded-lg',
+                currentPage === page
+                  ? 'bg-shothodzo-green text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+              ]"
+            >
+              {{ page }}
+            </button>
+          </div>
+          
+          <button
+            @click="currentPage++"
+            :disabled="currentPage === totalPages"
+            :class="[
+              'px-3 py-2 text-sm font-medium rounded-lg',
+              currentPage === totalPages
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+            ]"
+          >
+            Next
+          </button>
+          <button
+            @click="currentPage = totalPages"
+            :disabled="currentPage === totalPages"
+            :class="[
+              'px-3 py-2 text-sm font-medium rounded-lg',
+              currentPage === totalPages
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+            ]"
+          >
+            Last
+          </button>
+        </div>
       </div>
 
       <!-- Add Employee Modal -->
@@ -192,10 +271,45 @@ const logoRoute = computed(() => {
   return '/'
 })
 
+const totalPages = computed(() => {
+  return Math.ceil(employees.value.length / itemsPerPage)
+})
+
+const startIndex = computed(() => {
+  return (currentPage.value - 1) * itemsPerPage
+})
+
+const endIndex = computed(() => {
+  return Math.min(startIndex.value + itemsPerPage, employees.value.length)
+})
+
+const paginatedEmployees = computed(() => {
+  return employees.value.slice(startIndex.value, endIndex.value)
+})
+
+const visiblePages = computed(() => {
+  const pages = []
+  const maxVisible = 5
+  let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2))
+  let end = Math.min(totalPages.value, start + maxVisible - 1)
+  
+  if (end - start < maxVisible - 1) {
+    start = Math.max(1, end - maxVisible + 1)
+  }
+  
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+  
+  return pages
+})
+
 const employees = ref([])
 const showAddModal = ref(false)
 const showEditModal = ref(false)
 const selectedEmployee = ref(null)
+const currentPage = ref(1)
+const itemsPerPage = 10
 const editEmployee = ref({
   id: null,
   firstName: '',
@@ -289,6 +403,8 @@ const handleAddEmployee = () => {
     }
     showAddModal.value = false
     loadEmployees()
+    // Reset to first page after adding
+    currentPage.value = 1
   } catch (error) {
     console.error('Error adding employee:', error)
     alert('Error adding employee: ' + error.message)
@@ -562,6 +678,10 @@ const deleteEmployee = (id) => {
           : `Employee record deleted successfully! (Note: User record was not found and could not be deleted)`
         alert(message)
         loadEmployees()
+        // Adjust current page if needed after deletion
+        if (currentPage.value > totalPages.value && totalPages.value > 0) {
+          currentPage.value = totalPages.value
+        }
       } else {
         alert('Failed to delete employee. No records were removed. Check console for details.')
         console.warn('No records were deleted!')
