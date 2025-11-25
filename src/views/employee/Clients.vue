@@ -4,7 +4,7 @@
     <header class="bg-shothodzo-green-dark text-white shadow-lg">
       <div class="container mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
-          <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+          <router-link :to="logoRoute" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <div class="w-[310px] h-[150px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
               <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
             </div>
@@ -136,6 +136,19 @@ const employeeName = computed(() => {
   return 'Employee'
 })
 
+const logoRoute = computed(() => {
+  if (authStore.isAuthenticated) {
+    if (authStore.isAdmin) {
+      return '/admin'
+    } else if (authStore.isEmployee) {
+      return '/employee'
+    } else if (authStore.isClient) {
+      return '/client'
+    }
+  }
+  return '/'
+})
+
 const filteredClients = computed(() => {
   if (!searchQuery.value) return clients.value
   
@@ -161,12 +174,19 @@ const getStatusClass = (status) => {
 const loadClients = () => {
   const employeeId = getEmployeeId(authStore.currentUser)
   if (!employeeId) {
-    console.error('Employee ID not found')
+    console.error('Employee ID not found', authStore.currentUser)
     return
   }
   
+  console.log('Loading clients for employee ID:', employeeId, 'Type:', typeof employeeId)
+  
   // Mark overdue clients automatically
   markOverdueClients(employeeId)
+  
+  // Get all clients first to debug
+  const allClients = db.getTable('clients')
+  console.log('All clients in database:', allClients)
+  console.log('Clients with employee_id:', allClients.filter(c => c.employee_id))
   
   const clientsData = db.prepare(`
     SELECT c.*, u.email
@@ -175,6 +195,24 @@ const loadClients = () => {
     WHERE c.employee_id = ?
     ORDER BY c.created_at DESC
   `).all(employeeId)
+  
+  console.log('Clients found for employee:', clientsData)
+  
+  // Also try with string conversion in case of type mismatch
+  if (clientsData.length === 0) {
+    const clientsDataString = db.prepare(`
+      SELECT c.*, u.email
+      FROM clients c
+      JOIN users u ON c.user_id = u.id
+      WHERE c.employee_id = ?
+      ORDER BY c.created_at DESC
+    `).all(String(employeeId))
+    
+    if (clientsDataString.length > 0) {
+      console.log('Found clients using string employee_id:', clientsDataString)
+      clientsData.push(...clientsDataString)
+    }
+  }
   
   // Add payment status to each client
   clients.value = clientsData.map(client => {
@@ -194,7 +232,7 @@ const viewClient = (id) => {
 
 const handleLogout = () => {
   authStore.logout()
-  router.push('/login')
+  router.push('/')
 }
 
 onMounted(() => {

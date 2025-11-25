@@ -112,18 +112,25 @@
         </div>
 
         <div>
-          <label for="employeeCode" class="block text-sm font-medium text-gray-700 mb-1">
-            Employee Reference Code *
-            <span class="text-xs text-gray-500">(Get this from your referring employee)</span>
+          <label for="employeeId" class="block text-sm font-medium text-gray-700 mb-1">
+            Select Your Employee *
+            <span class="text-xs text-gray-500">(Choose the employee you are registering under)</span>
           </label>
-          <input
-            id="employeeCode"
-            v-model="formData.employeeCode"
-            type="text"
+          <select
+            id="employeeId"
+            v-model="formData.employeeId"
             required
             class="input-field"
-            placeholder="Enter employee code"
-          />
+          >
+            <option value="">-- Select an employee --</option>
+            <option
+              v-for="employee in employees"
+              :key="employee.id"
+              :value="employee.id"
+            >
+              {{ employee.first_name }} {{ employee.last_name }} - {{ employee.employee_code }}
+            </option>
+          </select>
         </div>
 
         <div>
@@ -167,12 +174,46 @@ const formData = ref({
   phone: '',
   address: '',
   dateOfBirth: '',
-  employeeCode: ''
+  employeeId: ''
 })
 
+const employees = ref([])
 const error = ref('')
 const success = ref('')
 const loading = ref(false)
+
+const loadEmployees = () => {
+  try {
+    // Get all employees
+    const allEmployees = db.getTable('employees')
+    const allUsers = db.getTable('users')
+    
+    employees.value = allEmployees.map(employee => {
+      // Find the user record to get email
+      const user = allUsers.find(u => {
+        const uId = typeof u.id === 'string' ? parseInt(u.id, 10) : Number(u.id)
+        const eUserId = typeof employee.user_id === 'string' ? parseInt(employee.user_id, 10) : Number(employee.user_id)
+        return uId === eUserId || String(u.id) === String(employee.user_id)
+      })
+      
+      return {
+        id: employee.id,
+        first_name: employee.first_name,
+        last_name: employee.last_name,
+        employee_code: employee.employee_code,
+        email: user?.email || 'N/A'
+      }
+    }).sort((a, b) => {
+      // Sort by name
+      const nameA = `${a.first_name} ${a.last_name}`.toLowerCase()
+      const nameB = `${b.first_name} ${b.last_name}`.toLowerCase()
+      return nameA.localeCompare(nameB)
+    })
+  } catch (error) {
+    console.error('Error loading employees:', error)
+    error.value = 'Failed to load employees. Please refresh the page.'
+  }
+}
 
 const checkFamilyPlan = (idNumber) => {
   // Check if client is already under a family plan
@@ -211,11 +252,25 @@ const handleRegister = async () => {
   loading.value = true
 
   try {
-    // Check if employee exists
-    const employee = db.prepare('SELECT id FROM employees WHERE employee_code = ?').get(formData.value.employeeCode)
+    // Validate employee selection
+    if (!formData.value.employeeId) {
+      throw new Error('Please select an employee')
+    }
+
+    // Ensure employeeId is a number
+    const employeeId = typeof formData.value.employeeId === 'string' 
+      ? parseInt(formData.value.employeeId, 10) 
+      : Number(formData.value.employeeId)
+    
+    if (isNaN(employeeId)) {
+      throw new Error('Invalid employee selection')
+    }
+
+    // Verify employee exists
+    const employee = db.prepare('SELECT id FROM employees WHERE id = ?').get(employeeId)
     
     if (!employee) {
-      throw new Error('Invalid employee reference code. Please contact your referring employee.')
+      throw new Error('Selected employee not found. Please refresh the page and try again.')
     }
 
     // Check if client is already under a family plan
@@ -235,7 +290,7 @@ const handleRegister = async () => {
       formData.value.password,
       'client',
       {
-        employeeId: employee.id,
+        employeeId: employeeId,
         firstName: formData.value.firstName,
         lastName: formData.value.lastName,
         idNumber: formData.value.idNumber,
@@ -256,5 +311,9 @@ const handleRegister = async () => {
     loading.value = false
   }
 }
+
+onMounted(() => {
+  loadEmployees()
+})
 </script>
 
