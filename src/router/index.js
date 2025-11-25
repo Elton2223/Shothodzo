@@ -75,6 +75,15 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   
+  // Ensure auth state is initialized
+  if (!authStore.isAuthenticated && localStorage.getItem('shothodzo_current_user')) {
+    try {
+      authStore.initializeAuth()
+    } catch (error) {
+      console.error('Error initializing auth:', error)
+    }
+  }
+  
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'Login', query: { redirect: to.fullPath } })
   } else if (to.meta.requiresRole && authStore.userRole !== to.meta.requiresRole) {

@@ -4,7 +4,7 @@
     <header class="bg-shothodzo-green-dark text-white shadow-lg">
       <div class="container mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
-          <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+          <router-link :to="logoRoute" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <div class="w-[310px] h-[150px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
               <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
             </div>
@@ -105,13 +105,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
 import db from '../../database/db'
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+const logoRoute = computed(() => {
+  if (authStore.isAuthenticated) {
+    if (authStore.isAdmin) {
+      return '/admin'
+    } else if (authStore.isEmployee) {
+      return '/employee'
+    } else if (authStore.isClient) {
+      return '/client'
+    }
+  }
+  return '/'
+})
 
 const stats = ref({
   totalEmployees: 0,
@@ -149,7 +162,7 @@ const loadRecentActivity = () => {
 
 const handleLogout = () => {
   authStore.logout()
-  router.push('/login')
+  router.push('/')
 }
 
 onMounted(() => {

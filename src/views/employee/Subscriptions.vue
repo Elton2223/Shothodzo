@@ -4,7 +4,7 @@
     <header class="bg-shothodzo-green-dark text-white shadow-lg">
       <div class="container mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
-          <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+          <router-link :to="logoRoute" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <div class="w-[310px] h-[150px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
               <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
             </div>
@@ -206,6 +206,19 @@ const subscriptionForm = ref({
   status: 'active'
 })
 
+const logoRoute = computed(() => {
+  if (authStore.isAuthenticated) {
+    if (authStore.isAdmin) {
+      return '/admin'
+    } else if (authStore.isEmployee) {
+      return '/employee'
+    } else if (authStore.isClient) {
+      return '/client'
+    }
+  }
+  return '/'
+})
+
 const employeeName = computed(() => {
   if (authStore.currentUser) {
     return `${authStore.currentUser.first_name} ${authStore.currentUser.last_name}`
@@ -252,11 +265,27 @@ const loadSubscriptions = () => {
     ORDER BY c.first_name, c.last_name
   `).all(employeeId)
   
-  // Get all subscriptions
-  const allSubscriptions = JSON.parse(localStorage.getItem('shothodzo_subscriptions') || '[]')
+  // Get all subscriptions from database (via db.prepare)
+  const dbSubscriptions = db.prepare('SELECT * FROM subscriptions').all() || []
+  
+  // Get all subscriptions from localStorage (for backward compatibility)
+  const localStorageSubscriptions = JSON.parse(localStorage.getItem('shothodzo_subscriptions') || '[]')
+  
+  // Merge both sources, prioritizing database subscriptions
+  const allSubscriptions = [...dbSubscriptions]
+  localStorageSubscriptions.forEach(localSub => {
+    if (!allSubscriptions.find(s => s.id === localSub.id && s.client_id === localSub.client_id)) {
+      allSubscriptions.push(localSub)
+    }
+  })
   
   subscriptions.value = clients.map(client => {
-    const subscription = allSubscriptions.find(s => s.client_id === client.id)
+    // Try to find subscription from database first, then localStorage
+    let subscription = dbSubscriptions.find(s => s.client_id === client.id)
+    if (!subscription) {
+      subscription = localStorageSubscriptions.find(s => s.client_id === client.id)
+    }
+    
     const paymentStatus = checkPaymentStatus(client.id)
     
     return {
@@ -282,7 +311,12 @@ const updatePremium = () => {
 
 const manageSubscription = (item) => {
   selectedClient.value = item
-  const allSubscriptions = JSON.parse(localStorage.getItem('shothodzo_subscriptions') || '[]')
+  
+  // Get subscription from both database and localStorage
+  const dbSubscriptions = db.prepare('SELECT * FROM subscriptions').all() || []
+  const localStorageSubscriptions = JSON.parse(localStorage.getItem('shothodzo_subscriptions') || '[]')
+  const allSubscriptions = [...dbSubscriptions, ...localStorageSubscriptions]
+  
   selectedSubscription.value = item.subscription_id ? allSubscriptions.find(s => s.id === item.subscription_id) : null
   
   if (selectedSubscription.value) {
@@ -316,7 +350,7 @@ const handleSaveSubscription = () => {
     const clientsTable = db.getTable('clients')
     
     if (selectedSubscription.value) {
-      // Update existing subscription
+      // Update existing subscription - update both localStorage and database
       const index = subscriptionsTable.findIndex(s => s.id === selectedSubscription.value.id)
       if (index !== -1) {
         subscriptionsTable[index] = {
@@ -327,11 +361,25 @@ const handleSaveSubscription = () => {
           status: subscriptionForm.value.status
         }
         db.setTable('subscriptions', subscriptionsTable)
+        
+        // Also update via database query for consistency
+        db.prepare(`
+          UPDATE subscriptions 
+          SET plan_type = ?, monthly_premium = ?, start_date = ?, status = ?
+          WHERE id = ?
+        `).run(
+          subscriptionForm.value.planType,
+          subscriptionForm.value.monthlyPremium,
+          subscriptionForm.value.startDate,
+          subscriptionForm.value.status,
+          selectedSubscription.value.id
+        )
       }
     } else {
-      // Create new subscription
+      // Create new subscription - save to both localStorage and database
+      const newId = subscriptionsTable.length > 0 ? Math.max(...subscriptionsTable.map(s => s.id || 0)) + 1 : 1
       const newSubscription = {
-        id: subscriptionsTable.length > 0 ? Math.max(...subscriptionsTable.map(s => s.id || 0)) + 1 : 1,
+        id: newId,
         client_id: selectedClient.value.client_id,
         plan_type: subscriptionForm.value.planType,
         monthly_premium: subscriptionForm.value.monthlyPremium,
@@ -342,6 +390,18 @@ const handleSaveSubscription = () => {
       }
       subscriptionsTable.push(newSubscription)
       db.setTable('subscriptions', subscriptionsTable)
+      
+      // Also insert via database query for consistency
+      db.prepare(`
+        INSERT INTO subscriptions (client_id, plan_type, monthly_premium, start_date, status)
+        VALUES (?, ?, ?, ?, ?)
+      `).run(
+        selectedClient.value.client_id,
+        subscriptionForm.value.planType,
+        subscriptionForm.value.monthlyPremium,
+        subscriptionForm.value.startDate,
+        subscriptionForm.value.status
+      )
     }
     
     // Update client subscription status
@@ -362,7 +422,7 @@ const handleSaveSubscription = () => {
 
 const handleLogout = () => {
   authStore.logout()
-  router.push('/login')
+  router.push('/')
 }
 
 onMounted(() => {

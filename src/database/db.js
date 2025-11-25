@@ -187,12 +187,12 @@ class Database {
       data = data.map(item => {
         const employee = employees.find(e => {
           if (query.includes('e.id = c.employee_id') || query.includes('employee_id = e.id')) {
-            return e.id === item.employee_id
+            return String(e.id) === String(item.employee_id) || Number(e.id) === Number(item.employee_id)
           }
-          return e.user_id === item.user_id || e.id === item.id
+          return String(e.user_id) === String(item.user_id) || String(e.id) === String(item.id) || Number(e.user_id) === Number(item.user_id) || Number(e.id) === Number(item.id)
         })
         if (employee) {
-          const user = users.find(u => u.id === employee.user_id)
+          const user = users.find(u => String(u.id) === String(employee.user_id) || Number(u.id) === Number(employee.user_id))
           return {
             ...item,
             ...employee,
@@ -209,9 +209,9 @@ class Database {
       data = data.map(item => {
         const client = clients.find(c => {
           if (query.includes('c.user_id = u.id') || query.includes('user_id = c.user_id')) {
-            return c.user_id === item.id || c.user_id === item.user_id
+            return String(c.user_id) === String(item.id) || String(c.user_id) === String(item.user_id) || Number(c.user_id) === Number(item.id) || Number(c.user_id) === Number(item.user_id)
           }
-          return c.id === item.client_id || c.id === item.id
+          return String(c.id) === String(item.client_id) || String(c.id) === String(item.id) || Number(c.id) === Number(item.client_id) || Number(c.id) === Number(item.id)
         })
         if (client) {
           return { ...item, ...client }
@@ -225,10 +225,12 @@ class Database {
       const users = this.getTable('users')
       data = data.map(item => {
         const user = users.find(u => {
-          if (query.includes('u.id = c.user_id') || query.includes('user_id = u.id')) {
-            return u.id === item.user_id || u.id === item.id
+          if (query.includes('u.id = c.user_id') || query.includes('user_id = u.id') || query.includes('c.user_id = u.id')) {
+            // Handle both c.user_id = u.id and u.id = c.user_id
+            const userId = item.user_id || item.id
+            return String(u.id) === String(userId) || Number(u.id) === Number(userId)
           }
-          return u.id === item.user_id
+          return String(u.id) === String(item.user_id) || Number(u.id) === Number(item.user_id)
         })
         if (user) {
           return { ...item, email: user.email }
@@ -321,7 +323,8 @@ class Database {
     })
     
     // Set timestamps if not provided
-    if (!newRecord.created_at && (columns.includes('created_at') || tableName === 'users')) {
+    // Auto-set created_at for users, employees, and clients tables
+    if (!newRecord.created_at && (columns.includes('created_at') || tableName === 'users' || tableName === 'employees' || tableName === 'clients')) {
       newRecord.created_at = new Date().toISOString()
     }
     if (!newRecord.added_at && columns.includes('added_at')) {
@@ -347,6 +350,21 @@ class Database {
     const setClause = setMatch[1]
     const updates = setClause.split(',').map(s => s.trim())
     
+    // Count how many SET parameters we have
+    let setParamCount = 0
+    updates.forEach(update => {
+      const valuePart = update.split('=')[1]?.trim()
+      if (valuePart === '?') {
+        setParamCount++
+      } else if (valuePart && valuePart.includes('?')) {
+        setParamCount += (valuePart.match(/\?/g) || []).length
+      }
+    })
+    
+    // WHERE clause parameters come after SET parameters
+    const whereParams = params.slice(setParamCount)
+    const setParams = params.slice(0, setParamCount)
+    
     let changes = 0
     const whereMatch = query.match(/WHERE\s+(.+?)(?:\s+ORDER|\s+LIMIT|$)/i)
     
@@ -354,7 +372,7 @@ class Database {
       let shouldUpdate = true
       if (whereMatch) {
         const condition = whereMatch[1]
-        shouldUpdate = this.matchesCondition(record, condition, params)
+        shouldUpdate = this.matchesCondition(record, condition, whereParams)
       }
       
       if (shouldUpdate) {
@@ -366,13 +384,13 @@ class Database {
           const cleanField = field.trim()
           
           if (valuePart === '?') {
-            updated[cleanField] = params[paramIndex]
+            updated[cleanField] = setParams[paramIndex]
             paramIndex++
           } else if (valuePart && valuePart.includes('?')) {
             // Handle multiple ? in value
             let value = valuePart
             while (value.includes('?')) {
-              value = value.replace('?', params[paramIndex])
+              value = value.replace('?', setParams[paramIndex])
               paramIndex++
             }
             updated[cleanField] = value.replace(/'/g, '')
@@ -424,10 +442,26 @@ class Database {
         if (value.trim() === '?') {
           const recordValue = record[cleanField]
           const paramValue = params && params.length > 0 ? params[0] : null
-          // Convert both to strings for comparison, handle null/undefined
+          
+          // Handle null/undefined
           if (recordValue === null || recordValue === undefined) {
             return paramValue === null || paramValue === undefined
           }
+          if (paramValue === null || paramValue === undefined) {
+            return false
+          }
+          
+          // For ID fields, use strict numeric comparison first, then fallback to string
+          if (cleanField === 'id' || cleanField.endsWith('_id')) {
+            const recordNum = Number(recordValue)
+            const paramNum = Number(paramValue)
+            // Strict numeric comparison for IDs
+            if (!isNaN(recordNum) && !isNaN(paramNum)) {
+              return recordNum === paramNum
+            }
+          }
+          
+          // Fallback to string comparison
           return String(recordValue) === String(paramValue)
         }
         

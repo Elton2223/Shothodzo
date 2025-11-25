@@ -37,7 +37,7 @@
     <!-- Main Navigation -->
     <nav class="glass-nav bg-shothodzo-green-dark text-white sticky top-0 z-50" style="background-color: rgba(5, 150, 105, 0.95);">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <router-link to="/" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+        <router-link :to="logoRoute" class="flex items-center cursor-pointer hover:opacity-80 transition-opacity">
           <div class="w-[350px] h-[146px] bg-white rounded-lg flex items-center justify-center p-2 shadow-md overflow-hidden">
             <img src="/images/Shothodzo.jpg" alt="Shothodzo Logo" class="w-full h-full object-cover rounded" />
           </div>
@@ -84,7 +84,7 @@
           Why Families Across South Africa Trust Shothodzo Funeral Services
         </h2>
         <div class="grid grid-cols-4 gap-8">
-          <div class="text-center">
+          <div class="text-center neumorphic glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
             <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
@@ -93,7 +93,7 @@
             <h3 class="text-xl font-bold text-gray-900 mb-3">Compassionate & Personalized Service</h3>
             <p class="text-gray-700">We provide careful, tailor-made services that reflect your loved one's unique life and legacy.</p>
           </div>
-          <div class="text-center">
+          <div class="text-center neumorphic glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
             <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
@@ -103,7 +103,7 @@
             <h3 class="text-xl font-bold text-gray-900 mb-3">Experienced, Caring Professionals</h3>
             <p class="text-gray-700">Our dedicated team has years of experience and provides heartfelt guidance throughout the process.</p>
           </div>
-          <div class="text-center">
+          <div class="text-center neumorphic glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
             <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
@@ -112,7 +112,7 @@
             <h3 class="text-xl font-bold text-gray-900 mb-3">Support Around The Clock</h3>
             <p class="text-gray-700">Available 24/7 for questions, arrangements, and support when you need us most.</p>
           </div>
-          <div class="text-center">
+          <div class="text-center neumorphic glass-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
             <div class="w-20 h-20 bg-shothodzo-green-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.12V17a1 1 0 001 1z" />
@@ -281,6 +281,24 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
+
+const authStore = useAuthStore()
+
+const logoRoute = computed(() => {
+  if (authStore.isAuthenticated) {
+    if (authStore.isAdmin) {
+      return '/admin'
+    } else if (authStore.isEmployee) {
+      return '/employee'
+    } else if (authStore.isClient) {
+      return '/client'
+    }
+  }
+  return '/'
+})
+
 const testimonials = [
   {
     initials: 'ER',

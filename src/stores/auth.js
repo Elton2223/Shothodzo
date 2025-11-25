@@ -12,6 +12,66 @@ export const useAuthStore = defineStore('auth', () => {
   const isEmployee = computed(() => userRole.value === 'employee')
   const isClient = computed(() => userRole.value === 'client')
 
+  function logout() {
+    currentUser.value = null
+    userRole.value = null
+    
+    // Clear any session/token data from localStorage
+    localStorage.removeItem('shothodzo_auth_token')
+    localStorage.removeItem('shothodzo_session')
+    localStorage.removeItem('shothodzo_current_user')
+    localStorage.removeItem('shothodzo_user_role')
+  }
+
+  // Initialize authentication state on store creation
+  function initializeAuth() {
+    const savedUser = localStorage.getItem('shothodzo_current_user')
+    const savedRole = localStorage.getItem('shothodzo_user_role')
+    
+    if (savedUser && savedRole) {
+      try {
+        const user = JSON.parse(savedUser)
+        // Verify the user still exists in the database
+        const dbUser = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id)
+        if (dbUser) {
+          // Reload user data based on role
+          if (savedRole === 'employee') {
+            const employees = JSON.parse(localStorage.getItem('shothodzo_employees') || '[]')
+            const employee = employees.find(e => e.user_id === dbUser.id)
+            if (employee) {
+              currentUser.value = { ...dbUser, ...employee, role: savedRole }
+            } else {
+              const employeeFromDb = db.prepare('SELECT * FROM employees WHERE user_id = ?').get(dbUser.id)
+              if (employeeFromDb) {
+                currentUser.value = { ...dbUser, ...employeeFromDb, role: savedRole }
+              }
+            }
+          } else if (savedRole === 'client') {
+            const clients = JSON.parse(localStorage.getItem('shothodzo_clients') || '[]')
+            const client = clients.find(c => c.user_id === dbUser.id)
+            if (client) {
+              currentUser.value = { ...dbUser, ...client, role: savedRole }
+            } else {
+              const clientFromDb = db.prepare('SELECT * FROM clients WHERE user_id = ?').get(dbUser.id)
+              if (clientFromDb) {
+                currentUser.value = { ...dbUser, ...clientFromDb, role: savedRole }
+              }
+            }
+          } else {
+            currentUser.value = { ...dbUser, role: savedRole }
+          }
+          userRole.value = savedRole
+        } else {
+          // User no longer exists, clear session
+          logout()
+        }
+      } catch (error) {
+        console.error('Error restoring auth state:', error)
+        logout()
+      }
+    }
+  }
+
   function login(email, password) {
     // Convert email to lowercase for case-insensitive matching
     const normalizedEmail = email.toLowerCase().trim()
@@ -88,14 +148,13 @@ export const useAuthStore = defineStore('auth', () => {
     // Ensure role is always set correctly (in case it was overwritten during merge)
     if (currentUser.value) {
       userRole.value = currentUser.value.role = user.role
+      
+      // Persist to localStorage
+      localStorage.setItem('shothodzo_current_user', JSON.stringify(currentUser.value))
+      localStorage.setItem('shothodzo_user_role', userRole.value)
     }
 
     return currentUser.value
-  }
-
-  function logout() {
-    currentUser.value = null
-    userRole.value = null
   }
 
   function register(email, password, role, additionalData = {}) {
@@ -157,7 +216,8 @@ export const useAuthStore = defineStore('auth', () => {
     isClient,
     login,
     logout,
-    register
+    register,
+    initializeAuth
   }
 })
 
